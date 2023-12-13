@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      primitive: server
+  template:
+    metadata:
+      labels:
+        primitive: server
+    spec:
+      containers:
+        - name: server
+          image: jorakhachatryan/loosely-coupled
+          ports:
+            - containerPort: 3000
+          env:
+            - name: POSTGRES_USERNAME
+              value: postgres
+            - name: POSTGRES_DATABASE
+              value: postgres
+            - name: POSTGRES_HOST
+              value: postgres-cluster-ip-service
+            - name: POSTGRES_PORT
+              value: '5672'
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: credentials
+                  key: POSTGRES_PASSWORD
+            - name: RABBITMQ_HOST
+              value: rabbitmq-cluster-ip-service
+            - name: EXCHANGE_NAME
+              value: 'task_exchange'
+            - name: REDIS_HOST
+              value: redis-cluster-ip-service
+            - name: REDIS_P0RT
+              value: '6379'
+            - name: ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
