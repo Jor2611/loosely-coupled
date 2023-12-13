@@ -10,7 +10,6 @@ This repository demonstrates a sample implementation of loosely coupled replicas
 - **Multiple Assignment:**  Enables the assignment and execution of multiple tasks to a single or multiple replicas. If tasks are unassigned, they will be distributed to replicas in a round-robin fashion.
 - **Reassignment:** Tasks can be reassigned when not currently processing.
 - **Replica Shutdown:** Upon closing a replica, all tasks assigned to it will be deleted.
-- **Cron State Management:** Utilizes Redis for managing the states of cron jobs.
 
 ## Setup
 
@@ -49,6 +48,8 @@ $ kubectl port-forward <pod-name> 15672:15672
 # Access at `localhost:15672` with username and password as `guest`.
 ```
 
+![System Diagram!](/assets/diagram.png "System Diagram")
+
 ### Final Reflections
-You can scale the number of replicas up or down using the `app-depl.yaml` file or through the dashboard, accessible via the `minikube dashboard` command. A `Cluster-IP` service is configured in front of the replicas to load balance incoming requests among them. This setup is effective because the replicas are `Loosely Coupled`, allowing different replicas to handle the requests. `PostgreSQL` is configured with a `Persistent Volume Claim` to ensure data persistence, which is not the case for `Redis & RabbitMQ`.
+You can scale the number of replicas up or down using the `app-depl.yml` file or through the dashboard, accessible via the `minikube dashboard` command. A `Cluster-IP` service is configured in front of the replicas to load balance incoming requests among them. This setup is effective because the replicas are `Loosely Coupled`, allowing different replicas to handle the requests. Utilizes `Redis` for managing the states of cron jobs. `PostgreSQL` is configured with a `Persistent Volume Claim` to ensure data persistence, which is not the case for `Redis & RabbitMQ`.
 This setup is a demonstration and not intended for production use. It serves as a starting point for loosely coupled service architectures.
