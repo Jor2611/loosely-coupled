@@ -21,8 +21,8 @@ async function consumeTask(queueName) {
 
         if (task && replica) {
           await cron.addJob(task.name, 
-            { taskId: task.id, replicaId: replica.id, duration: 5000 }, 
-            { repeat: { every: 20000 } });
+            { taskId: task.id, replicaId: replica.id, duration: task.duration }, 
+            { repeat: { every: task.interval } });
         }
 
         MQ.ack(msg);
