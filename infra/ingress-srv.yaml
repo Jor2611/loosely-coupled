@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/use-regex: 'true'
 spec:
   rules:
-    - host: khachatryan-j.me
+    - host: looselycoupled.dev
       http:
         paths:
           - path: /api/?(.*)

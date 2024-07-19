@@ -15,7 +15,7 @@ This repository demonstrates a sample implementation of loosely coupled replicas
 
 ### Prerequisites
 Before running the app, make sure you have the following:
-- Minikube
+- Minikube (V1.32.0)
 - Kubectl
 
 ### On Local Environment
@@ -40,7 +40,7 @@ $ kubectl apply -f infra/
 ## Optional Configurations
 
 # 6.Configure Local DNS (Example for linux)
-$ echo "192.168.49.2 looselycoupled.net" | sudo tee -a /etc/hosts
+$ echo "192.168.49.2 looselycoupled.dev" | sudo tee -a /etc/hosts
 # Replace IP with your kuberentes cluster ip. You can retrieve it using `minikube ip`.
 
 # 7.RabbitMQ UI Tool Access
@@ -49,6 +49,39 @@ $ kubectl port-forward <pod-name> 15672:15672
 ```
 
 ![System Diagram!](/assets/diagram.png "System Diagram")
+
+### API
+```bash
+# List current replicas 
+/api/replica [GET]
+
+# List all  tasks
+/api/task [GET]
+
+# Create a task
+/api/task [POST]
+{
+  name: "Task 1",
+  duration: 120,
+  interval: 30
+}
+#Note: Numbers here mean seconds, 120 seconds is a minimum value for the duration.
+
+
+# Run a task
+/api/task/run [POST]
+{
+  tasks: [
+    {
+      taskId: 1,
+      replicaId: 2
+    }
+  ]
+}
+
+# Deleta a task
+/api/task/:taskId [DELETE]
+```
 
 ### Final Reflections
 You can scale the number of replicas up or down using the `app-depl.yml` file or through the dashboard, accessible via the `minikube dashboard` command. A `Cluster-IP` service is configured in front of the replicas to load balance incoming requests among them. This setup is effective because the replicas are `Loosely Coupled`, allowing different replicas to handle the requests. Utilizes `Redis` for managing the states of cron jobs. `PostgreSQL` is configured with a `Persistent Volume Claim` to ensure data persistence, which is not the case for `Redis & RabbitMQ`.
